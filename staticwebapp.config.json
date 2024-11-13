@@ -1,6 +1,18 @@
 {
     "routes": [
         {
+            "route": "/assets/*",
+            "headers": {
+                "cache-control": "public, max-age=31536000, immutable"
+            }
+        },
+        {
+            "route": "/styles/*",
+            "headers": {
+                "cache-control": "public, max-age=31536000, immutable"
+            }
+        },
+        {
             "route": "/*",
             "rewrite": "/index.html"
         }
