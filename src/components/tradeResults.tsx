@@ -1,7 +1,6 @@
 import React from 'react';
-import { StarterCount } from './starterForm';
-import { Team } from '../../types/httpModels';
-import { Trade } from '../../types/tradeModels';
+import { Team } from '../types/httpModels';
+import { Trade } from '../types/tradeModels';
 import DetailedTradeResult from './detailedTradeResults';
 import SimpleTradeResult from './simpleTradeResults';
 // import { calculateStarterAndFlexValues } from '../utils/tradeUtils';

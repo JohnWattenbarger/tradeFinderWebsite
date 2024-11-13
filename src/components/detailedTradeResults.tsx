@@ -1,6 +1,6 @@
 import React from 'react';
-import { Team } from '../../types/httpModels';
-import { Trade } from '../../types/tradeModels';
+import { Team } from '../types/httpModels';
+import { Trade } from '../types/tradeModels';
 import { getBestTrades, getSortedAndFilteredTrades } from '../utils/tradeUtils';
 
 interface TradeResultProps {

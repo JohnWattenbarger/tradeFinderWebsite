@@ -1,5 +1,5 @@
-import { League, Player, Team } from "../../types/httpModels";
-import { Trade } from "../../types/tradeModels";
+import { League, Player, Team } from "../types/httpModels";
+import { Trade } from "../types/tradeModels";
 import { StarterCount } from "../components/starterForm";
 
 export const findAllTrades = (league: League, selectedTeam: Team, starterCounts: StarterCount) => {
