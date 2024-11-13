@@ -1,10 +1,8 @@
-// src/App.tsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MainPage from './pages/MainPage';
 import { TradeCalculator } from './pages/TradeCalculator';
-import './styles/styles.css';
-// import TradeCalculator from './pages/TradeCalculator';
+import LeagueForm from './components/LeagueForm';
 
 const App: React.FC = () => {
   return (
@@ -12,6 +10,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/trade-calculator" element={<TradeCalculator />} />
+        <Route path="/league-form" element={<LeagueForm />} />
       </Routes>
     </Router>
   );

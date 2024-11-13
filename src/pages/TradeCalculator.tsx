@@ -117,7 +117,7 @@ export const TradeCalculator: React.FC = () => {
                     {(league && starterCounts) && <div>
                         <h1>Trade Finder</h1>
 
-                        <Link to="/">
+                        <Link to='/league-form'>
                             {`League: ${league.name}`}
                         </Link>
 
