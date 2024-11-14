@@ -35,16 +35,14 @@ export const TradeCalculator: React.FC = () => {
     const [selectedTeamId, setSelectedTeamId] = React.useState('');
     const [maxValueDiff, setMaxValueDiff] = React.useState<number>(1000);
     const [onlyPositiveTrades, setOnlyPositiveTrades] = React.useState<boolean>(true);
-    const [topTradeCounts, setTopTradeCounts] = React.useState<number>(5);
-    const [simpleView, setSimpleView] = React.useState<boolean>(false);
+    const [topTradeCounts, setTopTradeCounts] = React.useState<number>(15);
+    const [simpleView, setSimpleView] = React.useState<boolean>(true);
     const [loading, setLoading] = React.useState<boolean>(true);
-    const [include2PlayerTrades, setInclude2PlayerTrades] = React.useState<boolean>(false);
+    const [maxPlayersTraded, setMaxPlayersTraded] = React.useState<number>(1);
 
     // Caching findAllTrades last call
-    const lastArgs = React.useRef<{ league: League, selectedTeam: Team, starterCounts: StarterCount, include2PlayerTrades: boolean }>();
+    const lastArgs = React.useRef<{ league: League, selectedTeam: Team, starterCounts: StarterCount, maxPlayersTraded: number }>();
     const lastResult = React.useRef();
-    // let lastArgs = null;
-    // let lastResult = null;
 
     const location = useLocation();
     const params = new URLSearchParams(location.search);
@@ -68,38 +66,9 @@ export const TradeCalculator: React.FC = () => {
         }
     }, [])
 
-    // const isLoading = !league;
-
-    // React.useEffect(() => {
-    //     console.log('first render');
-
-    //     // TODO: see why this is getting triggered continuously
-    //     const handleMessage = (message: LeagueInfoMessage, sender: any, sendResponse: any) => {
-    //         if (message.type === MessageTypes.LEAGUE_DETAILS && !(leagueInfo && league)) {
-    //             console.log('received message: ' + JSON.stringify(message));
-    //             // Update the state with the received data
-    //             setLeagueInfo({ leagueId: message.leagueId, site: message.site });
-    //             setLeague(message.data);
-
-    //             // Send a response back to indicate successful handling
-    //             sendResponse({ success: true });
-    //         }
-    //     };
-
-    //     // Listen for the message from the background script
-    //     chrome.runtime.onMessage.addListener(handleMessage);
-
-    //     // Clean up the listener when the component unmounts
-    //     return () => {
-    //         console.log('removing listener');
-    //         chrome.runtime.onMessage.removeListener(handleMessage);
-    //     };
-    // }, []);
-
-    const suggestTrade = () => {
+    const suggestTrade = async () => {
         if (!league) throw `Unable to suggest trades. No team is selected.`;
-        // Logic to fetch or generate trade suggestions
-        // setResults(['Trade A', 'Trade B', 'Trade C']); // Example trade results
+
         const selectedTeam = getSelectedTeam();
 
         let allPossibleTrades;
@@ -109,13 +78,15 @@ export const TradeCalculator: React.FC = () => {
             lastArgs.current?.league.id === league.id &&
             lastArgs.current?.selectedTeam.ownerId === selectedTeam.ownerId &&
             JSON.stringify(lastArgs.current?.starterCounts) === JSON.stringify(starterCounts) &&
-            lastArgs.current?.include2PlayerTrades === include2PlayerTrades
+            lastArgs.current?.maxPlayersTraded === maxPlayersTraded
         ) {
             allPossibleTrades = lastResult.current;
             setResults(allPossibleTrades);
         } else {
-            allPossibleTrades = findAllTrades(league, selectedTeam, starterCounts, include2PlayerTrades);
-            setResults(allPossibleTrades);
+            setResults(undefined);
+            findAllTrades(league, selectedTeam, starterCounts, maxPlayersTraded).then(allPossibleTrades => {
+                setResults(allPossibleTrades);
+            });
         }
 
         // setResults(['Team: ' + selectedTeamId + ' selected'])
@@ -190,14 +161,15 @@ export const TradeCalculator: React.FC = () => {
                         </div>
 
                         <div>
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    checked={include2PlayerTrades}
-                                    onChange={(e) => setInclude2PlayerTrades(e.target.checked)}
-                                />
-                                Include 2 Player Trades
-                            </label>
+                            <label>Max Players Traded by Each Team</label>
+                            <input
+                                type="number"
+                                value={maxPlayersTraded}
+                                onChange={(e) => {
+                                    const newValue = parseInt(e.target.value);
+                                    setMaxPlayersTraded(newValue)
+                                }}
+                            />
                         </div>
 
                         <label htmlFor="team-select">Select a team:</label>

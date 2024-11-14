@@ -15,6 +15,21 @@ interface TradeResultProps {
 }
 
 const SimpleTradeResult: React.FC<TradeResultProps> = ({ selectedTeam, tradesMap, topTradesCount, maxValueDiff, onlyPositives }) => {
+    const renderBestTrades = () => {
+        // Collect all trades into a single array
+        const allTrades: Trade[] = Array.from(tradesMap.values()).flat();
+        const bestTrades = getBestTrades(allTrades, maxValueDiff, onlyPositives, topTradesCount);
+
+        return <div>
+            <span style={{ fontWeight: 'bold' }}>{`Top Trades:`}</span>
+            <div className="team-trades-container">
+                {bestTrades.map((trade, index) => (
+                    <>{renderTradeDetails(trade, index)}</>
+                ))}
+            </div>
+        </div>
+    }
+
     const renderTeamResult = (otherTeam: Team, trades: Trade[]) => {
         console.log(' filter out <0 = ' + onlyPositives)
         if (otherTeam !== selectedTeam) {
@@ -33,21 +48,6 @@ const SimpleTradeResult: React.FC<TradeResultProps> = ({ selectedTeam, tradesMap
         } else {
             return null;
         }
-    }
-
-    const renderBestTrades = () => {
-        // Collect all trades into a single array
-        const allTrades: Trade[] = Array.from(tradesMap.values()).flat();
-        const bestTrades = getBestTrades(allTrades, maxValueDiff, onlyPositives, topTradesCount);
-
-        return <div>
-            <span style={{ fontWeight: 'bold' }}>{`Top Trades:`}</span>
-            <div className="team-trades-container">
-                {bestTrades.map((trade, index) => (
-                    <>{renderTradeDetails(trade, index)}</>
-                ))}
-            </div>
-        </div>
     }
 
     const renderTradeDetails = (trade: Trade, index: number, renderTeamName: boolean = true) => {
@@ -78,9 +78,12 @@ const SimpleTradeResult: React.FC<TradeResultProps> = ({ selectedTeam, tradesMap
                             <span>{' ('}</span><ValueWithSign value={trade.tradeValue.starterToGain} /><span>{')'}</span>
                         </span>
                         <span className='separator'>{' ==> '}</span>
-                        <span className='difference'>
+                        <span className='difference tooltip-container'>
                             <span>{'difference: '}</span>
                             <ValueWithSign value={trade.tradeValue.netValueDifference} />
+                            <span className="tooltip">
+                                The difference between how much player value {trade.TeamFrom.team.owner} is receiving vs. giving up
+                            </span>
                         </span>
                     </span>
                 </div>
@@ -93,7 +96,7 @@ const SimpleTradeResult: React.FC<TradeResultProps> = ({ selectedTeam, tradesMap
         const positionClass = player.player.position ? player.player.position.toLowerCase() : ''; // Convert to lowercase to match class names
 
         return (
-            <span className={`player-container`}>
+            <span className={`player-container tooltip-container`}>
                 <span className={`player-name ${positionClass}`}>
                     {player.player.name}
                 </span>
@@ -103,8 +106,6 @@ const SimpleTradeResult: React.FC<TradeResultProps> = ({ selectedTeam, tradesMap
             </span>
         );
     };
-
-
 
     return (
         <div>

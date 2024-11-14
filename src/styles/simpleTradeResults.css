@@ -48,7 +48,6 @@
 }
 
 .player-name {
-    cursor: pointer;
     background: rgb(80 80 80);
     border-radius: 15px;
     padding: 3px 10px;
@@ -71,7 +70,7 @@
     left: 50%;
     transform: translateX(-50%);
     transition: opacity 0.2s;
-    max-width: 200px;
+    /* max-width: 200px; */
     /* Optional: Adjust max width of tooltip */
     text-align: center;
     /* Optional: Align text within the tooltip */
@@ -79,9 +78,15 @@
     /* Ensure words don't wrap */
 }
 
-.player-container:hover .tooltip {
+.tooltip-container:hover .tooltip {
     visibility: visible;
     opacity: .9;
+}
+
+.tooltip-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
 }
 
 /* Player Styling */

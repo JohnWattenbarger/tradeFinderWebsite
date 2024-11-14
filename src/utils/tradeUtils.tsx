@@ -2,7 +2,7 @@ import { League, Player, Team } from "../types/httpModels";
 import { Trade } from "../types/tradeModels";
 import { StarterCount } from "../components/starterForm";
 
-export const findAllTrades = (league: League, selectedTeam: Team, starterCounts: StarterCount, find2PlayerTrades?: boolean) => {
+export const findAllTrades = async (league: League, selectedTeam: Team, starterCounts: StarterCount, maxPlayersTraded: number = 1) => {
     console.log('Finding all trades for ' + selectedTeam.name);
     /** Map team IDs to the value of all starters */
     let initialStarterValueMap: Map<string, number> = new Map<string, number>();
@@ -14,14 +14,13 @@ export const findAllTrades = (league: League, selectedTeam: Team, starterCounts:
         initialStarterValueMap.set(team.ownerId, initialStarterValue);
     })
 
-    const maxPlayersTraded = find2PlayerTrades ? 2 : 1;
+    // const maxPlayersTraded = find2PlayerTrades ? 2 : 1;
     league.teams.forEach(otherTeam => {
         getTradesBetweenTeams(selectedTeam, otherTeam, starterCounts, initialStarterValueMap, tradesMap, maxPlayersTraded);
     });
 
     return tradesMap;
 }
-
 
 export function calculateStarterAndFlexValues(players: Player[], starterCounts: StarterCount) {
     // const players = team.players;
