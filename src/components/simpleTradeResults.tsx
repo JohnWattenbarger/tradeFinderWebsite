@@ -3,7 +3,7 @@ import { Player, Team } from '../types/httpModels';
 import { Trade } from '../types/tradeModels';
 import { getBestTrades, getSortedAndFilteredTrades } from '../utils/tradeUtils';
 import ValueWithSign from './ValueWithSign';
-import '../styles/simpleTradeResults.css';
+// import '../styles/simpleTradeResults.css';
 import TeamName from './TeamName';
 
 interface TradeResultProps {
