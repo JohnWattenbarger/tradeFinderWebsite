@@ -38,6 +38,13 @@ export const TradeCalculator: React.FC = () => {
     const [topTradeCounts, setTopTradeCounts] = React.useState<number>(5);
     const [simpleView, setSimpleView] = React.useState<boolean>(false);
     const [loading, setLoading] = React.useState<boolean>(true);
+    const [include2PlayerTrades, setInclude2PlayerTrades] = React.useState<boolean>(false);
+
+    // Caching findAllTrades last call
+    const lastArgs = React.useRef<{ league: League, selectedTeam: Team, starterCounts: StarterCount, include2PlayerTrades: boolean }>();
+    const lastResult = React.useRef();
+    // let lastArgs = null;
+    // let lastResult = null;
 
     const location = useLocation();
     const params = new URLSearchParams(location.search);
@@ -94,10 +101,25 @@ export const TradeCalculator: React.FC = () => {
         // Logic to fetch or generate trade suggestions
         // setResults(['Trade A', 'Trade B', 'Trade C']); // Example trade results
         const selectedTeam = getSelectedTeam();
-        const allPossibleTrades = findAllTrades(league, selectedTeam, starterCounts);
+
+        let allPossibleTrades;
+        // Check if the current call has the same arguments as the last one
+        if (
+            lastArgs &&
+            lastArgs.current?.league.id === league.id &&
+            lastArgs.current?.selectedTeam.ownerId === selectedTeam.ownerId &&
+            JSON.stringify(lastArgs.current?.starterCounts) === JSON.stringify(starterCounts) &&
+            lastArgs.current?.include2PlayerTrades === include2PlayerTrades
+        ) {
+            allPossibleTrades = lastResult.current;
+            setResults(allPossibleTrades);
+        } else {
+            allPossibleTrades = findAllTrades(league, selectedTeam, starterCounts, include2PlayerTrades);
+            setResults(allPossibleTrades);
+        }
 
         // setResults(['Team: ' + selectedTeamId + ' selected'])
-        setResults(allPossibleTrades);
+        // setResults(allPossibleTrades);
     };
 
     const getSelectedTeam = () => {
@@ -164,6 +186,17 @@ export const TradeCalculator: React.FC = () => {
                                     onChange={(e) => setSimpleView(e.target.checked)}
                                 />
                                 Simplified Results View
+                            </label>
+                        </div>
+
+                        <div>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    checked={include2PlayerTrades}
+                                    onChange={(e) => setInclude2PlayerTrades(e.target.checked)}
+                                />
+                                Include 2 Player Trades
                             </label>
                         </div>
 

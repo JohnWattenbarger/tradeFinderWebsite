@@ -1,0 +1,49 @@
+.positive {
+    color: rgb(137 255 137);
+}
+
+.trade-team-info {}
+
+.trade-team-info {
+    background: rgb(55, 55, 55);
+    padding: 5px 10px;
+    border-radius: 15px;
+    /* border: 2px solid green; */
+    display: inline-block;
+    margin: 5px 0;
+}
+
+.from-team {
+    /* color: rgb(200, 2255, 255); */
+    /* background: rgb(75 75 75); */
+    /* color: rgb(200, 255, 255); */
+    background: rgb(80 80 80);
+    border-radius: 15px;
+    padding: 3px 10px;
+}
+
+.to-team {
+    /* color: rgb(255 192 192); */
+    background: rgb(80 80 80);
+    border-radius: 15px;
+    padding: 3px 10px;
+}
+
+.difference {
+    /* color: rgb(255 192 192); */
+    background: rgb(80 80 80);
+    border-radius: 15px;
+    padding: 3px 10px;
+}
+
+.negative {
+    color: rgb(255 113 113);
+}
+
+.separator {
+    padding: 0px 10px;
+}
+
+.simple-team-name {
+    padding: 0px 10px;
+}
