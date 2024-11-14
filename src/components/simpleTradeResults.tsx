@@ -1,5 +1,5 @@
 import React from 'react';
-import { Team } from '../types/httpModels';
+import { Player, Team } from '../types/httpModels';
 import { Trade } from '../types/tradeModels';
 import { getBestTrades, getSortedAndFilteredTrades } from '../utils/tradeUtils';
 import ValueWithSign from './ValueWithSign';
@@ -61,7 +61,8 @@ const SimpleTradeResult: React.FC<TradeResultProps> = ({ selectedTeam, tradesMap
                         <span className='from-team'>
                             {trade.TeamFrom.players.map((player, index) => (
                                 <span key={player.player.id}>
-                                    {index === 0 ? `${player.player.name}` : `, ${player.player.name}`}
+                                    {index !== 0 && ', '}
+                                    {renderPlayer(player)}
                                 </span>
                             ))}
                             <span>{' ('}</span><ValueWithSign value={trade.tradeValue.starterFromGain} /><span>{')'}</span>
@@ -70,7 +71,8 @@ const SimpleTradeResult: React.FC<TradeResultProps> = ({ selectedTeam, tradesMap
                         <span className='to-team'>
                             {trade.TeamTo.players.map((player, index) => (
                                 <span key={player.player.id}>
-                                    {index === 0 ? `${player.player.name}` : `, ${player.player.name}`}
+                                    {index !== 0 && ', '}
+                                    {renderPlayer(player)}
                                 </span>
                             ))}
                             <span>{' ('}</span><ValueWithSign value={trade.tradeValue.starterToGain} /><span>{')'}</span>
@@ -85,6 +87,18 @@ const SimpleTradeResult: React.FC<TradeResultProps> = ({ selectedTeam, tradesMap
             </div>
         </div>
     }
+
+    const renderPlayer = (player: Player) => (
+        <span className="player-container">
+            <span className="player-name">
+                {player.player.name}
+            </span>
+            <span className="tooltip">
+                Player Value: {player.redraftValue}
+            </span>
+        </span>
+    );
+
 
     return (
         <div>

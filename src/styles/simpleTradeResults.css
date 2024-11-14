@@ -47,3 +47,41 @@
 .simple-team-name {
     padding: 0px 10px;
 }
+
+.player-container {
+    position: relative;
+    display: inline-block;
+}
+
+.player-name {
+    cursor: pointer;
+}
+
+.tooltip {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.75);
+    color: rgb(0, 0, 0);
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 12px;
+    white-space: nowrap;
+    /* Prevent line breaks inside the tooltip */
+    bottom: 100%;
+    /* Position above the player name */
+    left: 50%;
+    transform: translateX(-50%);
+    transition: opacity 0.2s;
+    max-width: 200px;
+    /* Optional: Adjust max width of tooltip */
+    text-align: center;
+    /* Optional: Align text within the tooltip */
+    word-wrap: normal;
+    /* Ensure words don't wrap */
+}
+
+.player-container:hover .tooltip {
+    visibility: visible;
+    opacity: .9;
+}
