@@ -7,3 +7,8 @@ Possible improvements:
    > Like for example, only show trades that include "Josh Allen"
  > Make it possible to hide/include trades only involving certain teams
    > Like hide trades involving Jared's team
+ > Look into why app freezes up when inputs are changed
+   > Are they recalculating the trades??
+ > Add async trade finder logic
+ > Show loading symbol
+ > Use a framework for graphics?
