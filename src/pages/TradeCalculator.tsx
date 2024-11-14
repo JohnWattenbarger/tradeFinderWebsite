@@ -114,82 +114,85 @@ export const TradeCalculator: React.FC = () => {
                             {`League: ${league.name}`}
                         </Link>
 
-                        <StartersForm starterCount={starterCounts} setStarterCount={setStarterCounts} />
+                        <div className='form-group'>
+                            <StartersForm starterCount={starterCounts} setStarterCount={setStarterCounts} />
 
-                        <div>
-                            <label>Max Allowed Player Value Difference:</label>
-                            <input
-                                type="number"
-                                value={maxValueDiff}
-                                onChange={(e) => {
-                                    const newValue = parseInt(e.target.value);
-                                    setMaxValueDiff(newValue)
-                                }}
-                            />
-                        </div>
-                        <div>
-                            <label>Trades Per Team:</label>
-                            <input
-                                type="number"
-                                value={topTradeCounts}
-                                onChange={(e) => {
-                                    const newValue = parseInt(e.target.value);
-                                    setTopTradeCounts(newValue)
-                                }}
-                            />
-                        </div>
-                        <div>
-                            <label>
+                            <div>
+                                <label>Max Allowed Player Value Difference:</label>
                                 <input
-                                    type="checkbox"
-                                    checked={onlyPositiveTrades}
-                                    onChange={(e) => setOnlyPositiveTrades(e.target.checked)}
+                                    type="number"
+                                    value={maxValueDiff}
+                                    onChange={(e) => {
+                                        const newValue = parseInt(e.target.value);
+                                        setMaxValueDiff(newValue)
+                                    }}
                                 />
-                                Show only positive trades
-                            </label>
-                        </div>
-
-                        <div>
-                            <label>
+                            </div>
+                            <div>
+                                <label>Trades Per Team:</label>
                                 <input
-                                    type="checkbox"
-                                    checked={simpleView}
-                                    onChange={(e) => setSimpleView(e.target.checked)}
+                                    type="number"
+                                    value={topTradeCounts}
+                                    onChange={(e) => {
+                                        const newValue = parseInt(e.target.value);
+                                        setTopTradeCounts(newValue)
+                                    }}
                                 />
-                                Simplified Results View
-                            </label>
+                            </div>
+                            <div>
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        checked={onlyPositiveTrades}
+                                        onChange={(e) => setOnlyPositiveTrades(e.target.checked)}
+                                    />
+                                    Show only positive trades
+                                </label>
+                            </div>
+
+                            <div>
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        checked={simpleView}
+                                        onChange={(e) => setSimpleView(e.target.checked)}
+                                    />
+                                    Simplified Results View
+                                </label>
+                            </div>
+
+                            <div>
+                                <label>Max Players Traded by Each Team</label>
+                                <input
+                                    type="number"
+                                    value={maxPlayersTraded}
+                                    onChange={(e) => {
+                                        const newValue = parseInt(e.target.value);
+                                        setMaxPlayersTraded(newValue)
+                                    }}
+                                />
+                            </div>
+
+                            <div>
+                                <label htmlFor="team-select">Select a team:</label>
+                                <select
+                                    id="team-select"
+                                    value={selectedTeamId}
+                                    onChange={(e) => setSelectedTeamId(e.target.value)}
+                                >
+                                    <option value="" disabled>Select a team</option>
+                                    {league.teams.map((team) => {
+                                        console.log('Rendering team: ' + team.name + ' - ' + team.owner);
+                                        return <option key={team.owner} value={team.owner}>
+                                            {`${team.name} - @${team.owner}`}
+                                        </option>
+                                    })}
+                                </select>
+                            </div>
+                            <button style={{ margin: "20px 10px" }} onClick={suggestTrade} disabled={!selectedTeamId}>
+                                Find Trades
+                            </button>
                         </div>
-
-                        <div>
-                            <label>Max Players Traded by Each Team</label>
-                            <input
-                                type="number"
-                                value={maxPlayersTraded}
-                                onChange={(e) => {
-                                    const newValue = parseInt(e.target.value);
-                                    setMaxPlayersTraded(newValue)
-                                }}
-                            />
-                        </div>
-
-                        <label htmlFor="team-select">Select a team:</label>
-                        <select
-                            id="team-select"
-                            value={selectedTeamId}
-                            onChange={(e) => setSelectedTeamId(e.target.value)}
-                        >
-                            <option value="" disabled>Select a team</option>
-                            {league.teams.map((team) => {
-                                console.log('Rendering team: ' + team.name + ' - ' + team.owner);
-                                return <option key={team.owner} value={team.owner}>
-                                    {`${team.name} - @${team.owner}`}
-                                </option>
-                            })}
-                        </select>
-
-                        <button onClick={suggestTrade} disabled={!selectedTeamId}>
-                            Find Trades
-                        </button>
                     </div>}
 
                     {/* Conditionally render the TradeResults component if there are results */}
