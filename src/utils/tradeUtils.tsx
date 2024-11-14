@@ -14,13 +14,10 @@ export const findAllTrades = (league: League, selectedTeam: Team, starterCounts:
         initialStarterValueMap.set(team.ownerId, initialStarterValue);
     })
 
+    const maxPlayersTraded = find2PlayerTrades ? 2 : 1;
     league.teams.forEach(otherTeam => {
-        getTradesBetweenTeams(selectedTeam, otherTeam, starterCounts, initialStarterValueMap, tradesMap);
+        getTradesBetweenTeams(selectedTeam, otherTeam, starterCounts, initialStarterValueMap, tradesMap, maxPlayersTraded);
     });
-
-    if (find2PlayerTrades) {
-        get2PlayerTradesBetweenTeams(tradesMap, initialStarterValueMap, starterCounts, league);
-    }
 
     return tradesMap;
 }
@@ -58,104 +55,96 @@ export function calculateStarterAndFlexValues(players: Player[], starterCounts: 
     return starterValue + flexValue;
 }
 
-const getTradesBetweenTeams = (selectedTeam: Team, otherTeam: Team, starterCounts: StarterCount, initialStarterValueMap: Map<string, number> = new Map<string, number>(), tradesMap: Map<Team, Trade[]>) => {
-    if (otherTeam != selectedTeam) {
-        console.log('- Finding trades for ' + otherTeam.name)
+const getTradesBetweenTeams = (
+    selectedTeam: Team,
+    otherTeam: Team,
+    starterCounts: StarterCount,
+    initialStarterValueMap: Map<string, number>,
+    tradesMap: Map<Team, Trade[]>,
+    maxPlayersTraded: number = 2 // Set default to 2 players traded
+) => {
+    if (otherTeam !== selectedTeam) {
+        console.log('- Finding trades for ' + otherTeam.name);
+
         let trades: Trade[] = [];
 
-        selectedTeam.players.forEach(player => {
-            if (!player.player.name.includes('Round')) { // Exclude draft picks that the site added
-                otherTeam.players.forEach(otherPlayer => {
-                    if (!otherPlayer.player.name.includes('Round')) { // Exclude draft picks that the site added
-                        const trade = getTrade(player, otherPlayer, selectedTeam, otherTeam, initialStarterValueMap, starterCounts);
+        // Filter out draft picks and get players for both teams
+        const selectedTeamPlayers = selectedTeam.players.filter(player => !player.player.name.includes('Round'));
+        const otherTeamPlayers = otherTeam.players.filter(player => !player.player.name.includes('Round'));
 
+        // Generate trades for the selected team
+        for (let numPlayersTraded = 1; numPlayersTraded <= maxPlayersTraded; numPlayersTraded++) {
+            // Generate all combinations of up to `numPlayersTraded` players for each team
+            const selectedTeamCombinations = getCombinations(selectedTeamPlayers, numPlayersTraded);
+            const otherTeamCombinations = getCombinations(otherTeamPlayers, numPlayersTraded);
+
+            // For each combination of players on one team, generate trades with combinations of players on the other team
+            selectedTeamCombinations.forEach(fromCombination => {
+                otherTeamCombinations.forEach(toCombination => {
+                    const trade = getTrade(fromCombination, toCombination, selectedTeam, otherTeam, initialStarterValueMap, starterCounts);
+                    if (trade) {
                         trades.push(trade);
                     }
                 });
-            }
-        });
+            });
+        }
 
-        // sort trades to have the highest combined gains first
-        trades.sort((a, b) => {
-            // Compare the upgrade differences (descending order)
-            return (b.tradeValue.combinedUpgradeGained - a.tradeValue.combinedUpgradeGained);
-        });
+        // Sort trades to prioritize the ones with the highest combined upgrade gained
+        trades.sort((a, b) => (b.tradeValue.combinedUpgradeGained - a.tradeValue.combinedUpgradeGained));
 
         tradesMap.set(otherTeam, trades);
     }
-}
+};
 
-const get2PlayerTradesBetweenTeams = (tradesMap: Map<Team, Trade[]>, initialStarterValueMap: Map<string, number> = new Map<string, number>(), starterCounts: StarterCount, league: League) => {
-    // Flatten all existing trades from the tradesMap into an array
-    const allTrades: Trade[] = Array.from(tradesMap.values()).flat();
+// Helper function to generate combinations of players
+const getCombinations = (players: Player[], numPlayers: number): Player[][] => {
+    const combinations: Player[][] = [];
+    const helper = (start: number, currentCombination: Player[]) => {
+        if (currentCombination.length === numPlayers) {
+            combinations.push([...currentCombination]);
+            return;
+        }
 
-    allTrades.forEach(trade => {
-        // Accumulate new trades here
-        const newTrades: Trade[] = [];
+        for (let i = start; i < players.length; i++) {
+            currentCombination.push(players[i]);
+            helper(i + 1, currentCombination);
+            currentCombination.pop();
+        }
+    };
 
-        const fromPlayers = trade.TeamFrom.team.players.filter(player => !player.player.name.includes('Round'));
-        const toPlayers = trade.TeamTo.team.players.filter(player => !player.player.name.includes('Round'));
+    helper(0, []);
+    return combinations;
+};
 
-        // Find all trades where a new player is added to the from team
-        fromPlayers.forEach(fromPlayer => {
-            if (!trade.TeamFrom.players.includes(fromPlayer)) {
-                const newTrade = getTrade(fromPlayer, null /* already added */, trade.TeamFrom.team, trade.TeamTo.team, initialStarterValueMap, starterCounts, trade.TeamFrom.players, trade.TeamTo.players);
-                newTrades.push(newTrade);
-            }
-        });
-
-        // Find all trades where a new player is added to the to team
-        fromPlayers.forEach(fromPlayer => {
-            if (!trade.TeamFrom.players.includes(fromPlayer)) {
-                toPlayers.forEach(toPlayer => {
-                    if (!trade.TeamTo.players.includes(toPlayer)) {
-                        const newTrade = getTrade(fromPlayer, toPlayer, trade.TeamFrom.team, trade.TeamTo.team, initialStarterValueMap, starterCounts, trade.TeamFrom.players, trade.TeamTo.players);
-                        newTrades.push(newTrade);
-                    }
-                });
-            }
-        });
-
-        // Find all trades where a new player is added to both teams
-        toPlayers.forEach(toPlayer => {
-            if (!trade.TeamTo.players.includes(toPlayer)) {
-                const newTrade = getTrade(null /* already added */, toPlayer, trade.TeamFrom.team, trade.TeamTo.team, initialStarterValueMap, starterCounts, trade.TeamFrom.players, trade.TeamTo.players);
-                newTrades.push(newTrade);
-            }
-        });
-
-        const teamToTrades = tradesMap.get(trade.TeamTo.team) ?? [];
-        tradesMap.set(trade.TeamTo.team, [...teamToTrades, ...newTrades]);
-    });
-}
-
-
-const getTrade = (player: Player | null, otherPlayer: Player | null, selectedTeam: Team, otherTeam: Team, initialStarterValueMap: Map<string, number> = new Map<string, number>(), starterCounts: StarterCount, existingPlayers: Player[] = [], existingOtherPlayers: Player[] = []): Trade => {
+const getTrade = (
+    fromPlayersList: Player[] | null,
+    toPlayersList: Player[] | null,
+    selectedTeam: Team,
+    otherTeam: Team,
+    initialStarterValueMap: Map<string, number> = new Map<string, number>(),
+    starterCounts: StarterCount,
+    existingPlayers: Player[] = [],
+    existingOtherPlayers: Player[] = []
+): Trade => {
+    // Initialize fromPlayers and toPlayers with the existing ones
     const fromPlayers = [...existingPlayers];
-    if (player) fromPlayers.push(player);
+    if (fromPlayersList) fromPlayers.push(...fromPlayersList);  // Add players from the list if provided
     const fromPlayerValues = fromPlayers.reduce((sum, player) => sum + player.redraftValue, 0);
 
     const toPlayers = [...existingOtherPlayers];
-    if (otherPlayer) toPlayers.push(otherPlayer);
+    if (toPlayersList) toPlayers.push(...toPlayersList);  // Add players from the list if provided
     const toPlayerValues = toPlayers.reduce((sum, player) => sum + player.redraftValue, 0);
 
-    // add other player and remove player from selectedTeam
+    // Remove the players that are part of the trade and recalculate the teams
     let selectedTeamCopy = [...selectedTeam.players];
-    selectedTeamCopy = selectedTeamCopy.filter(p => !(fromPlayers.map(p => p.player.id).includes(p.player.id)) && !p.player.name.includes('Round'));
-    // if (otherPlayer) {
-    //     selectedTeamCopy.push(otherPlayer);
-    // }
-    selectedTeamCopy.push(...toPlayers);
+    selectedTeamCopy = selectedTeamCopy.filter(p => !fromPlayers.map(p => p.player.id).includes(p.player.id) && !p.player.name.includes('Round'));
+    selectedTeamCopy.push(...toPlayers);  // Add the players from the 'to' team
 
-    // add player and remove other player from otherTeam
     let otherTeamCopy = [...otherTeam.players];
-    otherTeamCopy = otherTeamCopy.filter(p => !(toPlayers.map(p => p.player.id).includes(p.player.id)) && !p.player.name.includes('Round'));
-    // if (player) {
-    //     otherTeamCopy.push(player);
-    // }
-    otherTeamCopy.push(...fromPlayers);
+    otherTeamCopy = otherTeamCopy.filter(p => !toPlayers.map(p => p.player.id).includes(p.player.id) && !p.player.name.includes('Round'));
+    otherTeamCopy.push(...fromPlayers);  // Add the players from the 'from' team
 
-    // calculate new team values
+    // Calculate the new team values after the trade
     const fromNewTeamValue = calculateStarterAndFlexValues(selectedTeamCopy, starterCounts);
     const toNewTeamValue = calculateStarterAndFlexValues(otherTeamCopy, starterCounts);
 
@@ -165,26 +154,25 @@ const getTrade = (player: Player | null, otherPlayer: Player | null, selectedTea
     const starterToGain = toNewTeamValue - initialToValue;
     const starterFromGain = fromNewTeamValue - initialFromValue;
 
+    // Create the trade object
     const trade: Trade = {
         TeamFrom: { team: selectedTeam, players: fromPlayers },
         TeamTo: { team: otherTeam, players: toPlayers },
         tradeValue: {
-            // From Team
             teamFromBefore: initialFromValue,
             teamFromValue: fromNewTeamValue,
-            starterFromGain, // from team value gained
-            // To Team
+            starterFromGain, // From team value gained
             teamToBefore: initialToValue,
             teamToValue: toNewTeamValue,
-            starterToGain, // to team value gained
+            starterToGain, // To team value gained
 
             combinedUpgradeGained: (starterFromGain + starterToGain),
             netValueDifference: toPlayerValues - fromPlayerValues
         }
-    }
+    };
 
     return trade;
-}
+};
 
 const getStarterCount = (position: string, starterCounts: StarterCount) => {
     switch (position?.toLowerCase()) {
