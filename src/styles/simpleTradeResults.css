@@ -2,31 +2,25 @@
     color: rgb(137 255 137);
 }
 
-.trade-team-info {}
-
 .trade-team-info {
     background: rgb(55, 55, 55);
     padding: 5px 10px;
     border-radius: 15px;
     /* border: 2px solid green; */
     display: inline-block;
-    margin: 5px 0;
+    margin: 5px 5px;
 }
 
 .from-team {
-    /* color: rgb(200, 2255, 255); */
-    /* background: rgb(75 75 75); */
-    /* color: rgb(200, 255, 255); */
-    background: rgb(80 80 80);
+    /* background: rgb(80 80 80);
     border-radius: 15px;
-    padding: 3px 10px;
+    padding: 3px 10px; */
 }
 
 .to-team {
-    /* color: rgb(255 192 192); */
-    background: rgb(80 80 80);
+    /* background: rgb(80 80 80);
     border-radius: 15px;
-    padding: 3px 10px;
+    padding: 3px 10px; */
 }
 
 .difference {
@@ -55,6 +49,10 @@
 
 .player-name {
     cursor: pointer;
+    background: rgb(80 80 80);
+    border-radius: 15px;
+    padding: 3px 10px;
+    margin: 0px 2px;
 }
 
 .tooltip {
@@ -84,4 +82,25 @@
 .player-container:hover .tooltip {
     visibility: visible;
     opacity: .9;
+}
+
+/* Player Styling */
+.qb {
+    /* background: rgb(53 191 107); */
+    background: rgb(51 131 82);
+}
+
+.rb {
+    /* background: rgb(72 154 255); */
+    background: rgb(80 140 215);
+}
+
+.wr {
+    /* background: rgb(191 53 53); */
+    background: rgb(188 58 58);
+}
+
+.te {
+    /* background: rgb(191 138 53); */
+    background: rgb(190 137 53);
 }

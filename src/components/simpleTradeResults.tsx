@@ -59,9 +59,9 @@ const SimpleTradeResult: React.FC<TradeResultProps> = ({ selectedTeam, tradesMap
                     <span>
                         {renderTeamName && <TeamName team={trade.TeamTo.team} />}
                         <span className='from-team'>
-                            {trade.TeamFrom.players.map((player, index) => (
+                            {trade.TeamFrom.players.map((player) => (
                                 <span key={player.player.id}>
-                                    {index !== 0 && ', '}
+                                    {/* {index !== 0 && ', '} */}
                                     {renderPlayer(player)}
                                 </span>
                             ))}
@@ -69,9 +69,9 @@ const SimpleTradeResult: React.FC<TradeResultProps> = ({ selectedTeam, tradesMap
                         </span>
                         <span className='separator'>{' for '}</span>
                         <span className='to-team'>
-                            {trade.TeamTo.players.map((player, index) => (
+                            {trade.TeamTo.players.map((player) => (
                                 <span key={player.player.id}>
-                                    {index !== 0 && ', '}
+                                    {/* {index !== 0 && ', '} */}
                                     {renderPlayer(player)}
                                 </span>
                             ))}
@@ -88,16 +88,22 @@ const SimpleTradeResult: React.FC<TradeResultProps> = ({ selectedTeam, tradesMap
         </div>
     }
 
-    const renderPlayer = (player: Player) => (
-        <span className="player-container">
-            <span className="player-name">
-                {player.player.name}
+    const renderPlayer = (player: Player) => {
+        // Dynamically determine the class based on player's position
+        const positionClass = player.player.position ? player.player.position.toLowerCase() : ''; // Convert to lowercase to match class names
+
+        return (
+            <span className={`player-container`}>
+                <span className={`player-name ${positionClass}`}>
+                    {player.player.name}
+                </span>
+                <span className="tooltip">
+                    Player Value: {player.redraftValue}
+                </span>
             </span>
-            <span className="tooltip">
-                Player Value: {player.redraftValue}
-            </span>
-        </span>
-    );
+        );
+    };
+
 
 
     return (
