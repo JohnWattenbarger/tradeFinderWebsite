@@ -8,14 +8,14 @@ interface TradeResultProps {
     tradesMap: Map<Team, Trade[]>;
     topTradesCount: number;
     maxValueDiff?: number;
-    onlyPositives?: boolean;
+    minValueGained?: number;
 }
 
-const DetailedTradeResult: React.FC<TradeResultProps> = ({ selectedTeam, tradesMap, topTradesCount, maxValueDiff, onlyPositives }) => {
+const DetailedTradeResult: React.FC<TradeResultProps> = ({ selectedTeam, tradesMap, topTradesCount, maxValueDiff, minValueGained }) => {
     const renderTeamResult = (otherTeam: Team, trades: Trade[]) => {
-        console.log(' filter out <0 = ' + onlyPositives)
+        console.log(' filter out < ' + minValueGained)
         if (otherTeam !== selectedTeam) {
-            const filteredTrades = getSortedAndFilteredTrades(trades, maxValueDiff, onlyPositives, topTradesCount);
+            const filteredTrades = getSortedAndFilteredTrades(trades, maxValueDiff, minValueGained, topTradesCount);
 
             return (
                 <div key={otherTeam.ownerId}>
@@ -87,7 +87,7 @@ const DetailedTradeResult: React.FC<TradeResultProps> = ({ selectedTeam, tradesM
     const renderBestTrades = () => {
         // Collect all trades into a single array
         const allTrades: Trade[] = Array.from(tradesMap.values()).flat();
-        const bestTrades = getBestTrades(allTrades, maxValueDiff, onlyPositives, topTradesCount);
+        const bestTrades = getBestTrades(allTrades, maxValueDiff, minValueGained, topTradesCount);
 
         return (
             <div>

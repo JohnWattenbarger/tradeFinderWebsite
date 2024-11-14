@@ -10,7 +10,8 @@ interface TradeResultProps {
     tradesMap: Map<Team, Trade[]>;
     topTradesCount: number;
     maxValueDiff?: number;
-    onlyPositives?: boolean;
+    // onlyPositives?: boolean;
+    minValueGained?: number;
     simplifiedView?: boolean;
 }
 

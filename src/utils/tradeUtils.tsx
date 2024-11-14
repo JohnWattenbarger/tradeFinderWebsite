@@ -184,11 +184,11 @@ const getStarterCount = (position: string, starterCounts: StarterCount) => {
     return 0;
 }
 
-export const getSortedAndFilteredTrades = (trades: Trade[], maxValueDiff: number | undefined, onlyPositives: boolean | undefined, topTradesCount: number) => {
+export const getSortedAndFilteredTrades = (trades: Trade[], maxValueDiff: number | undefined, minValueGained: number | undefined, topTradesCount: number) => {
     // Sort trades by net value difference (highest first)
     let sortedTrades = trades.sort((a, b) => b.tradeValue.combinedUpgradeGained - a.tradeValue.combinedUpgradeGained);
     sortedTrades = getTradesWithinMaxDiff(sortedTrades, maxValueDiff);
-    sortedTrades = getPositiveTrades(sortedTrades, onlyPositives);
+    sortedTrades = getTradesWithMinValueGained(sortedTrades, minValueGained);
 
     // Return the full list if fewer than the desired top trades are available
     const topTrades = sortedTrades.length < topTradesCount
@@ -209,23 +209,23 @@ const getTradesWithinMaxDiff = (sortedTrades: Trade[], maxValueDiff?: number) =>
     return sortedTrades;
 }
 
-const getPositiveTrades = (sortedTrades: Trade[], onlyPositives?: boolean) => {
+const getTradesWithMinValueGained = (sortedTrades: Trade[], minValueGained?: number) => {
     // filter out negative returns for one team if specified
-    if (onlyPositives) {
+    if (minValueGained !== undefined) {
         // TODO: see if this is working? Looks like a negative starterTo slipped through
         sortedTrades = sortedTrades.filter(
-            trade => { return (trade.tradeValue.starterFromGain > 0 && trade.tradeValue.starterToGain > 0) }
+            trade => { return (trade.tradeValue.starterFromGain > minValueGained && trade.tradeValue.starterToGain > minValueGained) }
         );
     }
 
     return sortedTrades;
 }
 
-export const getBestTrades = (trades: Trade[], maxValueDiff: number | undefined, onlyPositives: boolean | undefined, topTradesCount: number) => {
+export const getBestTrades = (trades: Trade[], maxValueDiff: number | undefined, minValueGained: number | undefined, topTradesCount: number) => {
     // Sort trades by net value difference (highest first)
     let sortedTrades = trades.sort((a, b) => b.tradeValue.starterFromGain - a.tradeValue.starterFromGain);
     sortedTrades = getTradesWithinMaxDiff(sortedTrades, maxValueDiff);
-    sortedTrades = getPositiveTrades(sortedTrades, onlyPositives);
+    sortedTrades = getTradesWithMinValueGained(sortedTrades, minValueGained);
 
     // Return the full list if fewer than the desired top trades are available
     const topTrades = sortedTrades.length < topTradesCount

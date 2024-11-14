@@ -34,7 +34,8 @@ export const TradeCalculator: React.FC = () => {
     const [starterCounts, setStarterCounts] = React.useState<StarterCount>({ qb: 1, rb: 2, wr: 2, te: 1, flex: 1 });
     const [selectedTeamId, setSelectedTeamId] = React.useState('');
     const [maxValueDiff, setMaxValueDiff] = React.useState<number>(1000);
-    const [onlyPositiveTrades, setOnlyPositiveTrades] = React.useState<boolean>(true);
+    const [minValueGained, setMinValueGained] = React.useState<number>(0);
+    // const [maxImprovementDiff, setMaxImprovementDiff] = React.useState<number>(0);
     const [topTradeCounts, setTopTradeCounts] = React.useState<number>(15);
     const [simpleView, setSimpleView] = React.useState<boolean>(true);
     const [loading, setLoading] = React.useState<boolean>(true);
@@ -129,6 +130,17 @@ export const TradeCalculator: React.FC = () => {
                                 />
                             </div>
                             <div>
+                                <label>Min Value Each Team Must Improve By</label>
+                                <input
+                                    type="number"
+                                    value={minValueGained}
+                                    onChange={(e) => {
+                                        const newValue = parseInt(e.target.value);
+                                        setMinValueGained(newValue)
+                                    }}
+                                />
+                            </div>
+                            <div>
                                 <label>Trades Per Team:</label>
                                 <input
                                     type="number"
@@ -139,7 +151,7 @@ export const TradeCalculator: React.FC = () => {
                                     }}
                                 />
                             </div>
-                            <div>
+                            {/* <div>
                                 <label>
                                     <input
                                         type="checkbox"
@@ -148,7 +160,7 @@ export const TradeCalculator: React.FC = () => {
                                     />
                                     Show only positive trades
                                 </label>
-                            </div>
+                            </div> */}
 
                             <div>
                                 <label>
@@ -196,7 +208,7 @@ export const TradeCalculator: React.FC = () => {
                     </div>}
 
                     {/* Conditionally render the TradeResults component if there are results */}
-                    {results && <TradeResults selectedTeam={getSelectedTeam()} topTradesCount={topTradeCounts} tradesMap={results} maxValueDiff={maxValueDiff} onlyPositives={onlyPositiveTrades} simplifiedView={simpleView} />}
+                    {results && <TradeResults selectedTeam={getSelectedTeam()} topTradesCount={topTradeCounts} tradesMap={results} maxValueDiff={maxValueDiff} minValueGained={minValueGained} simplifiedView={simpleView} />}
 
                     <footer>
                         <p>
