@@ -34,7 +34,7 @@ export const TradeCalculator: React.FC = () => {
     const [starterCounts, setStarterCounts] = React.useState<StarterCount>({ qb: 1, rb: 2, wr: 2, te: 1, flex: 1 });
     const [selectedTeamId, setSelectedTeamId] = React.useState('');
     const [maxValueDiff, setMaxValueDiff] = React.useState<number>(1000);
-    const [minValueGained, setMinValueGained] = React.useState<number>(0);
+    const [minValueGained, setMinValueGained] = React.useState<number>(500);
     // const [maxImprovementDiff, setMaxImprovementDiff] = React.useState<number>(0);
     const [topTradeCounts, setTopTradeCounts] = React.useState<number>(15);
     const [simpleView, setSimpleView] = React.useState<boolean>(true);

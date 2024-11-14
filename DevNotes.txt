@@ -1,0 +1,9 @@
+Possible improvements:
+ > Have multiple player trades that are lopsided (3 - 1 or something)
+ > For multiple player trades, allow clicking to disable the player from the trade (preview what would change if a player were removed)
+ > Add sorting options (sort by best overall gain, best for my team, etc.)
+ > Add a max difference between team improvements (so I don't gain 1000 points but the other guy gains 10000 points)
+ > Add option to filter out/in specific players in the trade
+   > Like for example, only show trades that include "Josh Allen"
+ > Make it possible to hide/include trades only involving certain teams
+   > Like hide trades involving Jared's team
