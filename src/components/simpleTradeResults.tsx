@@ -18,11 +18,11 @@ import { TradeResultProps } from './tradeResults';
 //     filteredPlayers?: Player[];
 // }
 
-const SimpleTradeResult: React.FC<TradeResultProps> = ({ selectedTeam, tradesMap, topTradesCount, maxValueDiff, minValueGained, filteredPlayers }) => {
+const SimpleTradeResult: React.FC<TradeResultProps> = ({ selectedTeam, tradesMap, topTradesCount, maxValueDiff, minValueGained, filteredPlayers, minTradeablePlayerValue }) => {
     const renderBestTrades = () => {
         // Collect all trades into a single array
         const allTrades: Trade[] = Array.from(tradesMap.values()).flat();
-        const bestTrades = getBestTrades(allTrades, maxValueDiff, minValueGained, topTradesCount, filteredPlayers);
+        const bestTrades = getBestTrades(allTrades, maxValueDiff, minValueGained, topTradesCount, filteredPlayers, minTradeablePlayerValue);
 
         return <div>
             <span style={{ fontWeight: 'bold' }}>{`Top Trades:`}</span>
@@ -37,7 +37,7 @@ const SimpleTradeResult: React.FC<TradeResultProps> = ({ selectedTeam, tradesMap
     const renderTeamResult = (otherTeam: Team, trades: Trade[]) => {
         console.log(' filter out < ' + minValueGained)
         if (otherTeam !== selectedTeam) {
-            const filteredTrades = getSortedAndFilteredTrades(trades, maxValueDiff, minValueGained, topTradesCount, filteredPlayers);
+            const filteredTrades = getSortedAndFilteredTrades(trades, maxValueDiff, minValueGained, topTradesCount, filteredPlayers, minTradeablePlayerValue);
 
             return (
                 <div key={otherTeam.ownerId}>

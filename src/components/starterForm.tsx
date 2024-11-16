@@ -15,7 +15,8 @@ export interface StarterCount {
 
 const StartersForm: React.FC<StartersFormProps> = React.memo(({ starterCount, setStarterCount }) => {
   return (
-    <div>
+    <div className='position-form-group'>
+      <h3>Position Starter Counts</h3>
       <div>
         <label>QB:</label>
         <input

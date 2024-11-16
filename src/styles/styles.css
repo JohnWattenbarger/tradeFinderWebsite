@@ -30,6 +30,18 @@
     /* color: white; */
 }
 
+
+.position-form-group {
+    border: 1px solid white;
+    margin: 5px 0px;
+    padding: 5px;
+}
+
+h3 {
+    margin: inherit;
+    text-decoration: underline;
+}
+
 /* Label styling */
 label {
     font-size: 14px;

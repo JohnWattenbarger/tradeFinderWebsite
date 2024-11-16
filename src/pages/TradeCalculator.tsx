@@ -11,23 +11,8 @@ import { Trade } from '../types/tradeModels';
 import { fetchLeagueData } from '../shared/api';
 import { Link, useLocation } from 'react-router-dom';
 import { PlayerFilter } from '../components/PlayerFilter';
-// import PlayerFilter from '../components/PlayerFilter';
-
-// TODO: better share this between background and tradeCalculator
-// interface LeagueInfoMessage {
-//     type: MessageTypes;
-//     leagueId: string;
-//     site: string;
-//     data: League;
-// }
-
-// interface TradeCalculatorProps {
-//     leagueId: string;
-//     leagueType: string; // Should this be an enum?
-// }
 
 // Your trade calculator component
-// export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ leagueId, leagueType }) => {
 export const TradeCalculator: React.FC = () => {
     console.log('New TradeCalculator')
     const [results, setResults] = React.useState<Map<Team, Trade[]>>();
@@ -42,6 +27,7 @@ export const TradeCalculator: React.FC = () => {
     const [simpleView, setSimpleView] = React.useState<boolean>(true);
     const [loading, setLoading] = React.useState<boolean>(true);
     const [maxPlayersTraded, setMaxPlayersTraded] = React.useState<number>(1);
+    const [minTradeablePlayerValue, setMinTradeablePlayerValue] = React.useState<number>(1000);
     const [filteredPlayers, setFilteredPlayers] = React.useState<Player[]>();
 
     // Caching findAllTrades last call
@@ -165,6 +151,17 @@ export const TradeCalculator: React.FC = () => {
                                 />
                             </div>
                             <div>
+                                <label>Min Player Trade Value To Include</label>
+                                <input
+                                    type="number"
+                                    value={minTradeablePlayerValue}
+                                    onChange={(e) => {
+                                        const newValue = parseInt(e.target.value);
+                                        setMinTradeablePlayerValue(newValue)
+                                    }}
+                                />
+                            </div>
+                            <div>
                                 <label>Trades Per Team:</label>
                                 <input
                                     type="number"
@@ -241,7 +238,7 @@ export const TradeCalculator: React.FC = () => {
                     )}
 
                     {/* Conditionally render the TradeResults component if there are results */}
-                    {results && <TradeResults selectedTeam={getSelectedTeam()} topTradesCount={topTradeCounts} tradesMap={results} maxValueDiff={maxValueDiff} minValueGained={minValueGained} simplifiedView={simpleView} filteredPlayers={filteredPlayers} />}
+                    {results && <TradeResults selectedTeam={getSelectedTeam()} topTradesCount={topTradeCounts} tradesMap={results} maxValueDiff={maxValueDiff} minValueGained={minValueGained} simplifiedView={simpleView} filteredPlayers={filteredPlayers} minTradeablePlayerValue={minTradeablePlayerValue} />}
 
                     <footer>
                         <p>
