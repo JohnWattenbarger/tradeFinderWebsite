@@ -4,15 +4,6 @@ import { Trade } from '../types/tradeModels';
 import { getBestTrades, getSortedAndFilteredTrades } from '../utils/tradeUtils';
 import { TradeResultProps } from './tradeResults';
 
-// interface TradeResultProps {
-//     selectedTeam: Team;
-//     tradesMap: Map<Team, Trade[]>;
-//     topTradesCount: number;
-//     maxValueDiff?: number;
-//     minValueGained?: number;
-//     filteredPlayers?: Player[];
-// }
-
 const DetailedTradeResult: React.FC<TradeResultProps> = ({ selectedTeam, tradesMap, topTradesCount, maxValueDiff, minValueGained, filteredPlayers, minTradeablePlayerValue }) => {
     const renderTeamResult = (otherTeam: Team, trades: Trade[]) => {
         console.log(' filter out < ' + minValueGained)

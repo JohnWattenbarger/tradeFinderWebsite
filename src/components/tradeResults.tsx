@@ -14,6 +14,7 @@ export interface TradeResultProps {
     minValueGained?: number;
     simplifiedView?: boolean;
     filteredPlayers?: Player[];
+    minTradeablePlayerValue?: number;
 }
 
 const TradeResult: React.FC<TradeResultProps> = (props: TradeResultProps) => {
