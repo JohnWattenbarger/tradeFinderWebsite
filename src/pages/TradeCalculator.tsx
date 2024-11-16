@@ -4,12 +4,14 @@ import React from 'react';
 import TradeResults from '../components/tradeResults';
 // import { MessageTypes } from '../types/types';
 // import { League, Player, Team } from '../types/httpModels';
-import { League, Team } from '../types/httpModels';
+import { League, Player, Team } from '../types/httpModels';
 import StartersForm, { StarterCount } from '../components/starterForm';
 import { findAllTrades } from '../utils/tradeUtils';
 import { Trade } from '../types/tradeModels';
 import { fetchLeagueData } from '../shared/api';
 import { Link, useLocation } from 'react-router-dom';
+import { PlayerFilter } from '../components/PlayerFilter';
+// import PlayerFilter from '../components/PlayerFilter';
 
 // TODO: better share this between background and tradeCalculator
 // interface LeagueInfoMessage {
@@ -40,6 +42,7 @@ export const TradeCalculator: React.FC = () => {
     const [simpleView, setSimpleView] = React.useState<boolean>(true);
     const [loading, setLoading] = React.useState<boolean>(true);
     const [maxPlayersTraded, setMaxPlayersTraded] = React.useState<number>(1);
+    const [filteredPlayers, setFilteredPlayers] = React.useState<Player[]>();
 
     // Caching findAllTrades last call
     const lastArgs = React.useRef<{ league: League, selectedTeam: Team, starterCounts: StarterCount, maxPlayersTraded: number }>();
@@ -55,6 +58,25 @@ export const TradeCalculator: React.FC = () => {
     React.useEffect(() => {
         if (leagueId && site) {
             fetchLeagueData(leagueId, site).then((data: League) => {
+                data?.teams.forEach(team => {
+                    team.players = team.players.filter(p => !(p.player.name.includes('Round')));
+
+                    const positionOrder = ["QB", "RB", "WR", "TE"]; // Define the desired order for positions
+
+                    team.players = team.players.sort((a, b) => {
+                        // Sort by position
+                        const positionComparison =
+                            positionOrder.indexOf(a.player.position) - positionOrder.indexOf(b.player.position);
+
+                        if (positionComparison !== 0) {
+                            return positionComparison; // Positions are different
+                        }
+
+                        // If positions are the same, sort by redraftValue (descending)
+                        return b.redraftValue - a.redraftValue;
+                    });
+
+                });
                 setLeague(data);
 
                 setLoading(false);
@@ -103,6 +125,8 @@ export const TradeCalculator: React.FC = () => {
 
         return selectedTeam;
     }
+
+    console.log('filteredPlayers: ' + JSON.stringify(filteredPlayers?.map(p => p.player.name)));
 
     return (
         <div className='trade-calculator'>
@@ -207,8 +231,17 @@ export const TradeCalculator: React.FC = () => {
                         </div>
                     </div>}
 
+                    {/* Results filters */}
+                    {selectedTeamId && results && (
+                        <PlayerFilter
+                            players={getSelectedTeam()?.players || []} // Safely handle null/undefined values
+                            filteredPlayers={filteredPlayers ?? []}
+                            setFilteredPlayers={setFilteredPlayers}
+                        />
+                    )}
+
                     {/* Conditionally render the TradeResults component if there are results */}
-                    {results && <TradeResults selectedTeam={getSelectedTeam()} topTradesCount={topTradeCounts} tradesMap={results} maxValueDiff={maxValueDiff} minValueGained={minValueGained} simplifiedView={simpleView} />}
+                    {results && <TradeResults selectedTeam={getSelectedTeam()} topTradesCount={topTradeCounts} tradesMap={results} maxValueDiff={maxValueDiff} minValueGained={minValueGained} simplifiedView={simpleView} filteredPlayers={filteredPlayers} />}
 
                     <footer>
                         <p>

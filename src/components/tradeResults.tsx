@@ -1,11 +1,11 @@
 import React from 'react';
-import { Team } from '../types/httpModels';
+import { Player, Team } from '../types/httpModels';
 import { Trade } from '../types/tradeModels';
 import DetailedTradeResult from './detailedTradeResults';
 import SimpleTradeResult from './simpleTradeResults';
 // import { calculateStarterAndFlexValues } from '../utils/tradeUtils';
 
-interface TradeResultProps {
+export interface TradeResultProps {
     selectedTeam: Team;
     tradesMap: Map<Team, Trade[]>;
     topTradesCount: number;
@@ -13,6 +13,7 @@ interface TradeResultProps {
     // onlyPositives?: boolean;
     minValueGained?: number;
     simplifiedView?: boolean;
+    filteredPlayers?: Player[];
 }
 
 const TradeResult: React.FC<TradeResultProps> = (props: TradeResultProps) => {

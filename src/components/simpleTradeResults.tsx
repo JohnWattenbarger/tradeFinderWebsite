@@ -1,25 +1,28 @@
 import React from 'react';
-import { Player, Team } from '../types/httpModels';
+import { Team } from '../types/httpModels';
 import { Trade } from '../types/tradeModels';
 import { getBestTrades, getSortedAndFilteredTrades } from '../utils/tradeUtils';
 import ValueWithSign from './ValueWithSign';
 // import '../styles/simpleTradeResults.css';
 import TeamName from './TeamName';
+import PlayerCard from './PlayerCard';
+import { TradeResultProps } from './tradeResults';
 
-interface TradeResultProps {
-    selectedTeam: Team;
-    tradesMap: Map<Team, Trade[]>;
-    topTradesCount: number;
-    maxValueDiff?: number;
-    // onlyPositives?: boolean;
-    minValueGained?: number;
-}
+// interface TradeResultProps {
+//     selectedTeam: Team;
+//     tradesMap: Map<Team, Trade[]>;
+//     topTradesCount: number;
+//     maxValueDiff?: number;
+//     // onlyPositives?: boolean;
+//     minValueGained?: number;
+//     filteredPlayers?: Player[];
+// }
 
-const SimpleTradeResult: React.FC<TradeResultProps> = ({ selectedTeam, tradesMap, topTradesCount, maxValueDiff, minValueGained }) => {
+const SimpleTradeResult: React.FC<TradeResultProps> = ({ selectedTeam, tradesMap, topTradesCount, maxValueDiff, minValueGained, filteredPlayers }) => {
     const renderBestTrades = () => {
         // Collect all trades into a single array
         const allTrades: Trade[] = Array.from(tradesMap.values()).flat();
-        const bestTrades = getBestTrades(allTrades, maxValueDiff, minValueGained, topTradesCount);
+        const bestTrades = getBestTrades(allTrades, maxValueDiff, minValueGained, topTradesCount, filteredPlayers);
 
         return <div>
             <span style={{ fontWeight: 'bold' }}>{`Top Trades:`}</span>
@@ -34,7 +37,7 @@ const SimpleTradeResult: React.FC<TradeResultProps> = ({ selectedTeam, tradesMap
     const renderTeamResult = (otherTeam: Team, trades: Trade[]) => {
         console.log(' filter out < ' + minValueGained)
         if (otherTeam !== selectedTeam) {
-            const filteredTrades = getSortedAndFilteredTrades(trades, maxValueDiff, minValueGained, topTradesCount);
+            const filteredTrades = getSortedAndFilteredTrades(trades, maxValueDiff, minValueGained, topTradesCount, filteredPlayers);
 
             return (
                 <div key={otherTeam.ownerId}>
@@ -63,7 +66,7 @@ const SimpleTradeResult: React.FC<TradeResultProps> = ({ selectedTeam, tradesMap
                             {trade.TeamFrom.players.map((player) => (
                                 <span key={player.player.id}>
                                     {/* {index !== 0 && ', '} */}
-                                    {renderPlayer(player)}
+                                    <PlayerCard player={player} />
                                 </span>
                             ))}
                             <span>{' ('}</span><ValueWithSign value={trade.tradeValue.starterFromGain} /><span>{')'}</span>
@@ -73,7 +76,7 @@ const SimpleTradeResult: React.FC<TradeResultProps> = ({ selectedTeam, tradesMap
                             {trade.TeamTo.players.map((player) => (
                                 <span key={player.player.id}>
                                     {/* {index !== 0 && ', '} */}
-                                    {renderPlayer(player)}
+                                    <PlayerCard player={player} />
                                 </span>
                             ))}
                             <span>{' ('}</span><ValueWithSign value={trade.tradeValue.starterToGain} /><span>{')'}</span>
@@ -91,22 +94,6 @@ const SimpleTradeResult: React.FC<TradeResultProps> = ({ selectedTeam, tradesMap
             </div>
         </div>
     }
-
-    const renderPlayer = (player: Player) => {
-        // Dynamically determine the class based on player's position
-        const positionClass = player.player.position ? player.player.position.toLowerCase() : ''; // Convert to lowercase to match class names
-
-        return (
-            <span className={`player-container tooltip-container`}>
-                <span className={`player-name ${positionClass}`}>
-                    {player.player.name}
-                </span>
-                <span className="tooltip">
-                    Player Value: {player.redraftValue}
-                </span>
-            </span>
-        );
-    };
 
     return (
         <div>

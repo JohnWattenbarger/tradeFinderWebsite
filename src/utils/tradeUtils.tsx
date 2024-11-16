@@ -184,11 +184,12 @@ const getStarterCount = (position: string, starterCounts: StarterCount) => {
     return 0;
 }
 
-export const getSortedAndFilteredTrades = (trades: Trade[], maxValueDiff: number | undefined, minValueGained: number | undefined, topTradesCount: number) => {
+export const getSortedAndFilteredTrades = (trades: Trade[], maxValueDiff: number | undefined, minValueGained: number | undefined, topTradesCount: number, filteredPlayers: Player[] | undefined) => {
     // Sort trades by net value difference (highest first)
     let sortedTrades = trades.sort((a, b) => b.tradeValue.combinedUpgradeGained - a.tradeValue.combinedUpgradeGained);
     sortedTrades = getTradesWithinMaxDiff(sortedTrades, maxValueDiff);
     sortedTrades = getTradesWithMinValueGained(sortedTrades, minValueGained);
+    sortedTrades = getTradesWithoutFilteredPlayers(sortedTrades, filteredPlayers);
 
     // Return the full list if fewer than the desired top trades are available
     const topTrades = sortedTrades.length < topTradesCount
@@ -221,11 +222,32 @@ const getTradesWithMinValueGained = (sortedTrades: Trade[], minValueGained?: num
     return sortedTrades;
 }
 
-export const getBestTrades = (trades: Trade[], maxValueDiff: number | undefined, minValueGained: number | undefined, topTradesCount: number) => {
+const getTradesWithoutFilteredPlayers = (sortedTrades: Trade[], filteredPlayers?: Player[]) => {
+    if (filteredPlayers && filteredPlayers.length > 0) {
+        // Create a set of filtered player IDs for quick lookup
+        const filteredPlayerIds = new Set(filteredPlayers.map(player => player.player.id));
+
+        return sortedTrades.filter(trade => {
+            // Check if any player in TeamFrom or TeamTo matches a filtered player
+            const hasFilteredPlayers =
+                trade.TeamFrom.players.some(player => filteredPlayerIds.has(player.player.id)) ||
+                trade.TeamTo.players.some(player => filteredPlayerIds.has(player.player.id));
+
+            // Exclude trades with filtered players
+            return !hasFilteredPlayers;
+        });
+
+    }
+
+    return sortedTrades;
+}
+
+export const getBestTrades = (trades: Trade[], maxValueDiff: number | undefined, minValueGained: number | undefined, topTradesCount: number, filteredPlayers: Player[] | undefined) => {
     // Sort trades by net value difference (highest first)
     let sortedTrades = trades.sort((a, b) => b.tradeValue.starterFromGain - a.tradeValue.starterFromGain);
     sortedTrades = getTradesWithinMaxDiff(sortedTrades, maxValueDiff);
     sortedTrades = getTradesWithMinValueGained(sortedTrades, minValueGained);
+    sortedTrades = getTradesWithoutFilteredPlayers(sortedTrades, filteredPlayers);
 
     // Return the full list if fewer than the desired top trades are available
     const topTrades = sortedTrades.length < topTradesCount

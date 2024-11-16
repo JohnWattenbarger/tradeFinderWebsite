@@ -2,20 +2,22 @@ import React from 'react';
 import { Team } from '../types/httpModels';
 import { Trade } from '../types/tradeModels';
 import { getBestTrades, getSortedAndFilteredTrades } from '../utils/tradeUtils';
+import { TradeResultProps } from './tradeResults';
 
-interface TradeResultProps {
-    selectedTeam: Team;
-    tradesMap: Map<Team, Trade[]>;
-    topTradesCount: number;
-    maxValueDiff?: number;
-    minValueGained?: number;
-}
+// interface TradeResultProps {
+//     selectedTeam: Team;
+//     tradesMap: Map<Team, Trade[]>;
+//     topTradesCount: number;
+//     maxValueDiff?: number;
+//     minValueGained?: number;
+//     filteredPlayers?: Player[];
+// }
 
-const DetailedTradeResult: React.FC<TradeResultProps> = ({ selectedTeam, tradesMap, topTradesCount, maxValueDiff, minValueGained }) => {
+const DetailedTradeResult: React.FC<TradeResultProps> = ({ selectedTeam, tradesMap, topTradesCount, maxValueDiff, minValueGained, filteredPlayers }) => {
     const renderTeamResult = (otherTeam: Team, trades: Trade[]) => {
         console.log(' filter out < ' + minValueGained)
         if (otherTeam !== selectedTeam) {
-            const filteredTrades = getSortedAndFilteredTrades(trades, maxValueDiff, minValueGained, topTradesCount);
+            const filteredTrades = getSortedAndFilteredTrades(trades, maxValueDiff, minValueGained, topTradesCount, filteredPlayers);
 
             return (
                 <div key={otherTeam.ownerId}>
@@ -87,7 +89,7 @@ const DetailedTradeResult: React.FC<TradeResultProps> = ({ selectedTeam, tradesM
     const renderBestTrades = () => {
         // Collect all trades into a single array
         const allTrades: Trade[] = Array.from(tradesMap.values()).flat();
-        const bestTrades = getBestTrades(allTrades, maxValueDiff, minValueGained, topTradesCount);
+        const bestTrades = getBestTrades(allTrades, maxValueDiff, minValueGained, topTradesCount, filteredPlayers);
 
         return (
             <div>
