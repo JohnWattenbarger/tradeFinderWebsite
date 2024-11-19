@@ -7,6 +7,8 @@ Possible improvements:
  > Add a "Favorite" button to save trades I like
  > Make it possible to hide/include trades only involving certain teams
    > Like hide trades involving Jared's team
+ > Add different trade calculators
+   > Trades b/w 2 teams, trades for a certain player, etc.
  > Look into why app freezes up when inputs are changed
    > Are they recalculating the trades??
  > Add async trade finder logic
