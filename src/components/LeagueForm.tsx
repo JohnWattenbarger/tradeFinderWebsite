@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getSavedLeagues } from '../utils/storageUtils';
 
 const LeagueForm: React.FC = () => {
     const [leagueId, setLeagueId] = useState('');
@@ -10,9 +11,9 @@ const LeagueForm: React.FC = () => {
 
     useEffect(() => {
         // Get saved leagues from localStorage
-        const savedLeagues = localStorage.getItem('savedLeagues');
+        const savedLeagues = getSavedLeagues();
         if (savedLeagues) {
-            setExistingLeagues(JSON.parse(savedLeagues));
+            setExistingLeagues(savedLeagues);
         }
     }, []);
 
@@ -22,21 +23,6 @@ const LeagueForm: React.FC = () => {
         const leagueToSave = selectedLeague ? existingLeagues.find((league) => league.leagueId === selectedLeague) : { leagueId, site };
 
         if (leagueToSave) {
-            // Save the new or selected league to localStorage
-            const savedLeagues = localStorage.getItem('savedLeagues');
-            const parsedLeagues = savedLeagues ? JSON.parse(savedLeagues) : [];
-
-            // Add the new or selected league if it doesn't already exist
-            const existingLeague = parsedLeagues.find(
-                (league: { leagueId: string; site: string }) =>
-                    league.leagueId === leagueToSave.leagueId && league.site === leagueToSave.site
-            );
-
-            if (!existingLeague) {
-                parsedLeagues.push(leagueToSave);
-                localStorage.setItem('savedLeagues', JSON.stringify(parsedLeagues));
-            }
-
             // Navigate to TradeCalculator page with leagueId and site as URL params
             navigate(`/trade-calculator?leagueId=${leagueToSave.leagueId}&site=${leagueToSave.site}`);
         } else {

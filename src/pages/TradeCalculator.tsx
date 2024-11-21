@@ -1,9 +1,5 @@
 import React from 'react';
-// import ReactDOM from 'react-dom';
-// import ReactDOM from 'react-dom/client';
 import TradeResults from '../components/tradeResults';
-// import { MessageTypes } from '../types/types';
-// import { League, Player, Team } from '../types/httpModels';
 import { League, Player, Team } from '../types/httpModels';
 import StartersForm, { StarterCount } from '../components/starterForm';
 import { findAllTrades } from '../utils/tradeUtils';
@@ -11,24 +7,25 @@ import { Trade } from '../types/tradeModels';
 import { fetchLeagueData } from '../shared/api';
 import { Link, useLocation } from 'react-router-dom';
 import { PlayerFilter } from '../components/PlayerFilter';
+import { saveLeague } from '../utils/storageUtils';
+import { AxiosError } from 'axios';
 
 // Your trade calculator component
 export const TradeCalculator: React.FC = () => {
     console.log('New TradeCalculator')
     const [results, setResults] = React.useState<Map<Team, Trade[]>>();
-    // const [leagueInfo, setLeagueInfo] = React.useState<{ leagueId: string; site: string } | null>(null);
     const [league, setLeague] = React.useState<League>();
     const [starterCounts, setStarterCounts] = React.useState<StarterCount>({ qb: 1, rb: 2, wr: 2, te: 1, flex: 1 });
     const [selectedTeamId, setSelectedTeamId] = React.useState('');
     const [maxValueDiff, setMaxValueDiff] = React.useState<number>(1000);
     const [minValueGained, setMinValueGained] = React.useState<number>(500);
-    // const [maxImprovementDiff, setMaxImprovementDiff] = React.useState<number>(0);
     const [topTradeCounts, setTopTradeCounts] = React.useState<number>(15);
     const [simpleView, setSimpleView] = React.useState<boolean>(true);
     const [loading, setLoading] = React.useState<boolean>(true);
     const [maxPlayersTraded, setMaxPlayersTraded] = React.useState<number>(1);
     const [minTradeablePlayerValue, setMinTradeablePlayerValue] = React.useState<number>(1000);
     const [filteredPlayers, setFilteredPlayers] = React.useState<Player[]>();
+    const [error, setError] = React.useState<string>();
 
     // Caching findAllTrades last call
     const lastArgs = React.useRef<{ league: League, selectedTeam: Team, starterCounts: StarterCount, maxPlayersTraded: number }>();
@@ -63,15 +60,20 @@ export const TradeCalculator: React.FC = () => {
                     });
 
                 });
-                setLeague(data);
 
+                saveLeague({ leagueId, site });
+                setLeague(data);
                 setLoading(false);
             })
-                .catch((error) => {
+                .catch((error: AxiosError) => {
                     console.error("Error fetching league data:", error);
+
+                    setError("Failed to fetch league data. Error message: " + error.message);
+                    setLoading(false); // Stop the loading spinner
                 });
         } else {
-            throw new Error("Missing required parameters: leagueId and/or site.");
+            setError("Missing required parameters: leagueId and/or site.");
+            setLoading(false); // Stop the loading spinner
         }
     }, [])
 
@@ -97,13 +99,9 @@ export const TradeCalculator: React.FC = () => {
                 setResults(allPossibleTrades);
             });
         }
-
-        // setResults(['Team: ' + selectedTeamId + ' selected'])
-        // setResults(allPossibleTrades);
     };
 
     const getSelectedTeam = () => {
-        // const selectedTeam = league?.teams.find(team => team.ownerId === selectedTeamId);
         const selectedTeam = league?.teams.find(team => team.owner === selectedTeamId);
         if (!selectedTeam) {
             throw new Error("Unable to suggest trades. Error getting selected team details.");
@@ -116,6 +114,12 @@ export const TradeCalculator: React.FC = () => {
 
     return (
         <div className='trade-calculator'>
+            {error && <div>
+                <div className="error-message">{error}</div>
+                <Link to='/league-form'>
+                    {`Click here to return home.`}
+                </Link>
+            </div>}
             {loading ? <div>Loading...</div> :
                 <div>
                     {(league && starterCounts) && <div>
@@ -252,14 +256,3 @@ export const TradeCalculator: React.FC = () => {
         </div>
     );
 };
-
-// export const run = () => {
-//     // Ensure that the target element exists
-//     const tradeContainer = document.querySelector('.trade-select-container');
-//     if (tradeContainer) {
-//         const newElement = document.createElement('div');
-//         tradeContainer.appendChild(newElement);
-//         const root = ReactDOM.createRoot(newElement);
-//         root.render(<TradeCalculator />);
-//     }
-// };
