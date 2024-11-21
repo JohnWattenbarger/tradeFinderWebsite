@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getSavedLeagues } from '../utils/storageUtils';
+import { getSavedLeagues, removeSavedLeagues } from '../utils/storageUtils';
 
 const LeagueForm: React.FC = () => {
     const [leagueId, setLeagueId] = useState('');
@@ -32,8 +32,7 @@ const LeagueForm: React.FC = () => {
 
     const handleClearLeagues = () => {
         // Clear saved leagues from localStorage
-        localStorage.removeItem('savedLeagues');
-        // setSavedLeagues([]);
+        removeSavedLeagues();
         setExistingLeagues([]);
     };
 

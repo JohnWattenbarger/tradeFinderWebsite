@@ -22,3 +22,8 @@ export function saveLeague(leagueToSave: { leagueId: string, site: string }) {
         localStorage.setItem('savedLeagues', JSON.stringify(parsedLeagues));
     }
 }
+
+/** Delete all saved leagues from local storage */
+export function removeSavedLeagues() {
+    localStorage.removeItem('savedLeagues');
+}
