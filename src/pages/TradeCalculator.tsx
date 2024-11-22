@@ -75,7 +75,7 @@ export const TradeCalculator: React.FC = () => {
             setError("Missing required parameters: leagueId and/or site.");
             setLoading(false); // Stop the loading spinner
         }
-    }, [])
+    }, [leagueId, site])
 
     const suggestTrade = async () => {
         if (!league) throw `Unable to suggest trades. No team is selected.`;
