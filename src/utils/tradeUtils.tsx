@@ -11,7 +11,7 @@ export const findAllTrades = async (league: League, selectedTeam: Team, starterC
     league.teams.forEach(team => {
         const initialStarterValue = calculateStarterAndFlexValues(team.players, starterCounts);
         // Note: We don't actually have a unique team ID, so I am using ownerID. If an owner could have 2 teams we could change this to use ownerId-Team.name
-        initialStarterValueMap.set(team.ownerId, initialStarterValue);
+        initialStarterValueMap.set(getTeamId(team), initialStarterValue);
     })
 
     // const maxPlayersTraded = find2PlayerTrades ? 2 : 1;
@@ -147,8 +147,8 @@ const getTrade = (
     const fromNewTeamValue = calculateStarterAndFlexValues(selectedTeamCopy, starterCounts);
     const toNewTeamValue = calculateStarterAndFlexValues(otherTeamCopy, starterCounts);
 
-    const initialFromValue = initialStarterValueMap.get(selectedTeam.ownerId)!;
-    const initialToValue = initialStarterValueMap.get(otherTeam.ownerId)!;
+    const initialFromValue = initialStarterValueMap.get(getTeamId(selectedTeam))!;
+    const initialToValue = initialStarterValueMap.get(getTeamId(otherTeam))!;
 
     const starterToGain = toNewTeamValue - initialToValue;
     const starterFromGain = fromNewTeamValue - initialFromValue;
@@ -216,7 +216,7 @@ const getTradesWithMinValueGained = (sortedTrades: Trade[], minValueGained?: num
     if (minValueGained !== undefined) {
         // TODO: see if this is working? Looks like a negative starterTo slipped through
         sortedTrades = sortedTrades.filter(
-            trade => { return (trade.tradeValue.starterFromGain > minValueGained && trade.tradeValue.starterToGain > minValueGained) }
+            trade => { return (trade.tradeValue.starterFromGain >= minValueGained && trade.tradeValue.starterToGain >= minValueGained) }
         );
     }
 
@@ -272,4 +272,8 @@ export const getBestTrades = (trades: Trade[], maxValueDiff: number | undefined,
         : sortedTrades.slice(0, topTradesCount);
 
     return topTrades;
+}
+
+export const getTeamId = (team: Team) => {
+    return `${team.name}-${team.ownerId}`;
 }

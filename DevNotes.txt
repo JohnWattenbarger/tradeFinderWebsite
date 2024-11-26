@@ -1,9 +1,11 @@
 Possible improvements:
+ > Fix light-dark CSS styling (styles don't work in light mode)
+ > Change number of players option to a dropdown with 1-3
  > Have multiple player trades that are lopsided (3 - 1 or something)
- > For multiple player trades, allow clicking to disable the player from the trade (preview what would change if a player were removed)
- > Add sorting options (sort by best overall gain, best for my team, etc.)
- > Add a max difference between team improvements (so I don't gain 1000 points but the other guy gains 10000 points)
  > Add filter to exclude some teams
+ > Add sorting options (sort by best overall gain, best for my team, etc.)
+ > For multiple player trades, allow clicking to disable the player from the trade (preview what would change if a player were removed)
+ > Add a max difference between team improvements (so I don't gain 1000 points but the other guy gains 10000 points)
  > Add a "Favorite" button to save trades I like
  > Make it possible to hide/include trades only involving certain teams
    > Like hide trades involving Jared's team
@@ -14,3 +16,12 @@ Possible improvements:
  > Add async trade finder logic
  > Show loading symbol
  > Use a framework for graphics?
+
+
+
+Thoughts:
+ > Manually create leagues
+   > Use the league (ESPN) API to get teams and rosters
+   > Use FantasyCalc API to get player values
+     > The generalized rankings look I can do ((value + 5) * 100) to get close to league values
+   > Construct a simplified league  -->  League { Teams[]: { Players[]: ID, name, value, position }}
