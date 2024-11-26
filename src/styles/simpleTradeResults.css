@@ -1,9 +1,9 @@
 .positive {
-    color: rgb(137 255 137);
+    color: light-dark(rgb(51 131 82), rgb(137 255 137));
 }
 
 .trade-team-info {
-    background: rgb(55, 55, 55);
+    background: light-dark(rgb(200, 200, 200), rgb(55, 55, 55));
     padding: 5px 10px;
     border-radius: 15px;
     /* border: 2px solid green; */
@@ -13,13 +13,13 @@
 
 .difference {
     /* color: rgb(255 192 192); */
-    background: rgb(80 80 80);
+    background: light-dark(rgb(175 175 175), rgb(80 80 80));
     border-radius: 15px;
     padding: 3px 10px;
 }
 
 .negative {
-    color: rgb(255 113 113);
+    color: light-dark(rgb(188 58 58), rgb(255 113 113));
 }
 
 .separator {
@@ -36,7 +36,7 @@
 }
 
 .player-name {
-    background: rgb(80 80 80);
+    background: light-dark(rgb(175 175 175), rgb(80 80 80));
     border-radius: 15px;
     padding: 3px 10px;
     margin: 0px 2px;
@@ -46,8 +46,8 @@
     visibility: hidden;
     opacity: 0;
     position: absolute;
-    background-color: rgba(255, 255, 255, 0.75);
-    color: rgb(0, 0, 0);
+    background-color: light-dark(rgba(0, 0, 0, .75), rgba(255, 255, 255, 0.75));
+    color: light-dark(rgb(255, 255, 255), rgb(0, 0, 0));
     border-radius: 5px;
     padding: 5px;
     font-size: 12px;

@@ -5,8 +5,8 @@ import { StarterCount } from "../components/starterForm";
 export const findAllTrades = async (league: League, selectedTeam: Team, starterCounts: StarterCount, maxPlayersTraded: number = 1) => {
     console.log('Finding all trades for ' + selectedTeam.name);
     /** Map team IDs to the value of all starters */
-    let initialStarterValueMap: Map<string, number> = new Map<string, number>();
-    let tradesMap: Map<Team, Trade[]> = new Map<Team, Trade[]>();
+    const initialStarterValueMap: Map<string, number> = new Map<string, number>();
+    const tradesMap: Map<Team, Trade[]> = new Map<Team, Trade[]>();
 
     league.teams.forEach(team => {
         const initialStarterValue = calculateStarterAndFlexValues(team.players, starterCounts);
@@ -65,7 +65,7 @@ const getTradesBetweenTeams = (
     if (otherTeam !== selectedTeam) {
         console.log('- Finding trades for ' + otherTeam.name);
 
-        let trades: Trade[] = [];
+        const trades: Trade[] = [];
 
         // Filter out draft picks and get players for both teams
         const selectedTeamPlayers = selectedTeam.players.filter(player => !player.player.name.includes('Round'));

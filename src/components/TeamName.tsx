@@ -17,7 +17,14 @@ function getRandomColorFromHash(str: string) {
     const r = 155 + (hash % 100);
     const g = 155 + ((hash >> 8) % 100);
     const b = 155 + ((hash >> 16) % 100);
-    return `rgb(${r}, ${g}, ${b})`;
+    const darkSchemeColor = `rgb(${r}, ${g}, ${b})`;
+
+    const r2 = 255 - r;
+    const g2 = 255 - g;
+    const b2 = 255 - b;
+    const lightSchemeColor = `rgb(${r2}, ${g2}, ${b2})`
+
+    return `light-dark(${lightSchemeColor}, ${darkSchemeColor})`;
 }
 
 interface TeamNameProps {

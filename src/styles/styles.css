@@ -21,18 +21,18 @@
     margin-bottom: 16px;
     display: flex;
     flex-direction: column;
-    background: rgb(155, 155, 155);
+    background: light-dark(rgb(100, 100, 100), rgb(155, 155, 155));
     border-radius: 15px;
     padding: 10px;
     /* min-width: 780px; */
     width: 550px;
-    background: rgb(55, 55, 55);
+    background: light-dark(rgb(200, 200, 200), rgb(55, 55, 55));
     /* color: white; */
 }
 
 
 .position-form-group {
-    border: 1px solid white;
+    border: 1px solid light-dark(black, white);
     margin: 5px 0px;
     padding: 5px;
 }
@@ -60,12 +60,12 @@ select {
     border: 1px solid #ccc;
     border-radius: 4px;
     transition: border-color 0.3s ease;
-    background: rgb(176, 176, 176);
+    background: light-dark(rgb(79, 79, 79), rgb(176, 176, 176));
     /* color: #333; */
     margin: 4px;
     /* color: #333; */
     /* background-color: #1a1a1a; */
-    background-color: rgb(80 80 80);
+    background-color: light-dark(rgb(175, 175, 175), rgb(80 80 80));
     ;
     color-scheme: light dark;
 
@@ -85,25 +85,25 @@ select:focus {
 input[type="text"]:hover,
 input[type="number"]:hover,
 select:hover {
-    border-color: #888;
+    border-color: light-dark(#777777, #888);
 }
 
 /* Select styling */
 select {
     /* appearance: none; */
-    background-color: #fff;
+    /* background-color: #fff; */
     cursor: pointer;
     /* background: rgb(176, 176, 176); */
     /* color: #333; */
     margin: 4px;
     /* color: #333; */
-    background-color: #1a1a1a;
-    background-color: rgb(80 80 80);
+    /* background-color: light-dark(#e5e5e5, #1a1a1a); */
+    background-color: light-dark(rgb(175 175 175), rgb(80 80 80));
     color-scheme: light dark;
 }
 
 button {
-    background-color: rgb(80 80 80);
+    background-color: light-dark(rgb(175 175 175), rgb(80 80 80));
 }
 
 /* Optional arrow icon for select elements */
@@ -116,14 +116,14 @@ select::after {
 
 /* Placeholder color */
 input::placeholder {
-    color: #aaa;
+    color: light-dark(#555555, #aaa);
     font-size: 12px;
 }
 
 /* Optional disabled styling */
 input[disabled],
 select[disabled] {
-    background-color: #f7f7f7;
-    color: #777;
+    background-color: light-dark(#080808, #f7f7f7);
+    color: light-dark(#888888, #777);
     cursor: not-allowed;
 }
