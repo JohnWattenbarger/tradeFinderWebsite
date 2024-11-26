@@ -46,6 +46,15 @@ export const TradeCalculator: React.FC = () => {
     const site = params.get('site');
 
     React.useEffect(() => {
+        // On component load, check if cookies are stored and associate them with the league
+        const savedEspnS2 = localStorage.getItem('espnS2');
+        const savedSwid = localStorage.getItem('swid');
+
+        if (savedEspnS2 && savedSwid) {
+            setEspnS2(savedEspnS2);
+            setSwid(savedSwid);
+        }
+
         if (leagueId && site) {
             fetchLeagueData(leagueId, site).then((data: League) => {
                 data?.teams.forEach(team => {
@@ -126,6 +135,44 @@ export const TradeCalculator: React.FC = () => {
 
     console.log('filteredPlayers: ' + JSON.stringify(filteredPlayers?.map(p => p.player.name)));
 
+    const handleFetchPrivateLeague = async () => {
+        if (!espnS2 || !swid) {
+            setError('Please enter both ESPN S2 and SWID cookies.');
+            return;
+        }
+
+        // Store the cookies in localStorage for future use
+        localStorage.setItem('espnS2', espnS2);
+        localStorage.setItem('swid', swid);
+
+        try {
+            // Make API call or other logic to fetch the league data with cookies
+            // const data = await fetchPrivateLeagueData(espnS2, swid); // Replace with your actual function
+
+            const cookies: EspnCookies = {
+                espnS2,
+                swid
+            }
+            const espnLeague = await fetchEspnLeagueData(leagueId!, cookies);
+            const data = await espnLeagueToFantasyCalcLeague(espnLeague);
+
+            if (data) {
+                saveLeague({ leagueId: leagueId!, site: 'ESPN' });
+                setLeague(data);
+                setError(null);
+                setShowPrivateLeagueRetriever(false);
+            } else {
+                setError('Failed to fetch private league data. Please check your cookies.');
+            }
+
+            setLoading(false);
+        } catch (error) {
+            console.error(error);
+            setError('Failed to fetch private league data. Please check your cookies.');
+            setLoading(false);
+        }
+    };
+
     const renderPrivateLeagueRetriever = () => {
         return (
             <div>
@@ -163,40 +210,6 @@ export const TradeCalculator: React.FC = () => {
             </div>
         );
     }
-
-    const handleFetchPrivateLeague = async () => {
-        if (!espnS2 || !swid) {
-            setError('Please enter both ESPN S2 and SWID cookies.');
-            return;
-        }
-
-        try {
-            // Make API call or other logic to fetch the league data with cookies
-            // const data = await fetchPrivateLeagueData(espnS2, swid); // Replace with your actual function
-
-            const cookies: EspnCookies = {
-                espnS2,
-                swid
-            }
-            const espnLeague = await fetchEspnLeagueData(leagueId!, cookies);
-            const data = await espnLeagueToFantasyCalcLeague(espnLeague);
-
-            if (data) {
-                saveLeague({ leagueId: leagueId!, site: 'ESPN' });
-                setLeague(data);
-                setError(null);
-                setShowPrivateLeagueRetriever(false);
-            } else {
-                setError('Failed to fetch private league data. Please check your cookies.');
-            }
-
-            setLoading(false);
-        } catch (error) {
-            console.error(error);
-            setError('Failed to fetch private league data. Please check your cookies.');
-            setLoading(false);
-        }
-    };
 
     return (
         <div className='trade-calculator'>
