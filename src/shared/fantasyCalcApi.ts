@@ -10,8 +10,9 @@ export const fetchLeagueData = async (leagueId: string, site: string): Promise<L
     return response.data;
 };
 
-export const getTradeChartData = async (numTeams: number = 10, isDynasty: boolean = false, ppr: number = .5, numQbs: number = 1): Promise<FantasyCalc.PlayerTradeValue[]> => {
-    const url = `${fantasyCalcBase}/trade-chart/current?isDynasty=${isDynasty}&numQbs=${numQbs}&numTeams=${numTeams}&ppr=${ppr}`
+export const getTradeChartData = async (numTeams: number = 10, isDynasty: boolean = false, ppr: number = .5, numQbs: number = 1): Promise<FantasyCalc.Player[]> => {
+    // const url = `${fantasyCalcBase}/trade-chart/current?isDynasty=${isDynasty}&numQbs=${numQbs}&numTeams=${numTeams}&ppr=${ppr}`
+    const url = `${fantasyCalcBase}/values/current?isDynasty=${isDynasty}&numQbs=${numQbs}&numTeams=${numTeams}&ppr=${ppr}`
     const response = await axios.get(url);
     return response.data;
 }

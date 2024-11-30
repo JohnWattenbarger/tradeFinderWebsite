@@ -20,7 +20,7 @@ export async function espnLeagueToFantasyCalcLeague(espnLeague: Espn.League): Pr
     const isDynasty = false;
     const ppr = .5;
     const numQbs = 1;
-    const tradeChartData: FantasyCalc.PlayerTradeValue[] = await getTradeChartData(numTeams, isDynasty, ppr, numQbs);
+    const tradeChartData: FantasyCalc.Player[] = await getTradeChartData(numTeams, isDynasty, ppr, numQbs);
 
     const fantasyCalcTeams: Team[] = espnTeamsToFantasyCalcTeams(espnLeague.teams, tradeChartData, ownerIdToNameMap);
     const fantasyCalcLeague: League = { externalLeagueId: espnLeague.id, id: { value: espnLeague.id }, name: espnLeague.settings.name, teams: fantasyCalcTeams }
@@ -28,7 +28,7 @@ export async function espnLeagueToFantasyCalcLeague(espnLeague: Espn.League): Pr
     return fantasyCalcLeague;
 }
 
-function espnTeamsToFantasyCalcTeams(espnTeams: Espn.Team[], tradeChartData: FantasyCalc.PlayerTradeValue[], ownerIdToNameMap: Map<string, string>): Team[] {
+function espnTeamsToFantasyCalcTeams(espnTeams: Espn.Team[], tradeChartData: FantasyCalc.Player[], ownerIdToNameMap: Map<string, string>): Team[] {
     const newTeams = espnTeams.map(espnTeam => {
         return espnTeamToFantasyCalcTeam(espnTeam, tradeChartData, ownerIdToNameMap);
     })
@@ -36,19 +36,12 @@ function espnTeamsToFantasyCalcTeams(espnTeams: Espn.Team[], tradeChartData: Fan
     return newTeams;
 }
 
-function espnTeamToFantasyCalcTeam(espnTeam: Espn.Team, tradeChartData: FantasyCalc.PlayerTradeValue[], ownerIdToNameMap: Map<string, string>): Team {
+function espnTeamToFantasyCalcTeam(espnTeam: Espn.Team, tradeChartData: FantasyCalc.Player[], ownerIdToNameMap: Map<string, string>): Team {
     const espnPlayerIds: string[] = espnTeam.roster.entries.map(espnPlayer => {
         return `${espnPlayer.playerId}`;
     })
-    const tradePlayers = tradeChartData.map(playerTradeValue => {
-        if (playerTradeValue.qb) return playerTradeValue.qb;
-        if (playerTradeValue.rb) return playerTradeValue.rb;
-        if (playerTradeValue.wr) return playerTradeValue.wr;
-        if (playerTradeValue.te) return playerTradeValue.te;
 
-        return null;
-    });
-    const newPlayers = tradePlayers.filter(p => {
+    const newPlayers = tradeChartData.filter(p => {
         return (p && espnPlayerIds.includes(p.player.espnId))
     })
 
