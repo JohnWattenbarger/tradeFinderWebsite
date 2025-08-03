@@ -1,50 +1,134 @@
-# React + TypeScript + Vite
+# Fantasy Football Trade Finder
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A web application to help fantasy football players find mutually beneficial trades. Import your league data, search for trade partners, and get a list of the best trade options tailored to your league.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Table of Contents
 
-## Expanding the ESLint configuration
+- [Features](#features)
+- [Getting Started](#getting-started)
+- [Project Structure](#project-structure)
+- [Available Scripts](#available-scripts)
+- [ESLint & Code Quality](#eslint--code-quality)
+- [Configuration](#configuration)
+- [Contributing](#contributing)
+- [License](#license)
+- [Acknowledgements](#acknowledgements)
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+---
 
-- Configure the top-level `parserOptions` property like this:
+## Features
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+- Import league data from supported fantasy football platforms
+- Analyze rosters and needs for all teams in your league
+- Search for mutually beneficial trades
+- Get a ranked list of the best trade options
+- Built with React, TypeScript, and Vite for fast development
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (v18 or higher recommended)
+- [npm](https://www.npmjs.com/) (v9 or higher)
+- (Optional) [VS Code](https://code.visualstudio.com/) IDE of choice
+
+### Installation
+
+Clone the repository and install dependencies:
+
+```sh
+git clone https://github.com/JohnWattenbarger/tradeFinderWebsite.git
+cd tradeFinderWebsite
+npm install
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+### Running the Development Server
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+```sh
+npm run dev
 ```
+
+Open [http://localhost:5173](http://localhost:5173) in your browser to view the app.
+
+### Building for Production
+
+```sh
+npm run build
+```
+
+### Previewing the Production Build
+
+```sh
+npm run preview
+```
+
+---
+
+## Project Structure
+
+```
+tradeFinderWebsite/
+├── public/                # Static assets
+├── src/                   # Application source code
+│   ├── components/        # React components
+│   ├── hooks/             # Custom React hooks
+│   ├── utils/             # Utility functions
+│   ├── App.tsx            # Main app component
+│   └── main.tsx           # Entry point
+├── package.json           # Project metadata and scripts
+├── vite.config.ts         # Vite configuration
+├── eslint.config.js       # ESLint configuration
+└── README.md              # Project documentation
+```
+
+---
+
+## Available Scripts
+
+- `npm run dev` — Start the development server
+- `npm run build` — Build the app for production
+- `npm run preview` — Preview the production build locally
+- `npm run lint` — Run ESLint to check code quality
+
+---
+
+## ESLint & Code Quality
+
+This project uses ESLint with TypeScript and React rules.  
+To run lint checks:
+
+```sh
+npm run lint
+```
+
+For production applications, consider enabling type-aware lint rules and the React plugin.  
+See the ESLint configuration section in this README for more details.
+
+---
+
+## Configuration
+
+- Environment variables can be set in a `.env` file at the project root.
+- Vite-specific configuration is in `vite.config.ts`.
+
+---
+
+## Contributing
+
+Currently a 1 dev job, but reach out to johncwattenbarger@gmail.com if you'd like to contribute.
+
+---
+
+## Acknowledgements
+
+- [React](https://react.dev/)
+- [Vite](https://vitejs.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [ESLint](https://eslint.org/)
+- Fantasy football APIs and data sources
+
+---
